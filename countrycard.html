@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container {
+            /* border: 1px solid red; */
+            height: 100vh;
+            background-image: url('https://media.istockphoto.com/id/1393592694/photo/world-map-3d-render-topographic-map-color.jpg?s=1024x1024&w=is&k=20&c=WSP24IIdhSoeMOSyiX2t1m9yYRU-oRHCytHKXwKJ848=');
+            background-repeat: no-repeat;
+            background-size: 100%;
+
+        }
+
+        .countryCard {
+            border: 3px solid black;
+            margin-top: 10px;
+            margin-left: 30px;
+            height: 90%;
+            width: 90%;
+            text-align: center;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 8px 10px rgb(0, 12, 12);
+            color: rgb(0, 0, 0);
+            background-image: linear-gradient(rgba(134, 107, 107, 0.349), rgba(128, 0, 128, 0.055), rgba(128, 128, 128, 0.123));
+        }
+
+        button {
+            background-color: wheat;
+            color: brown;
+            height: 50px;
+            width: 100px;
+            border-radius: 20px;
+
+        }
+
+        button:hover {
+            background-color: brown;
+            color: wheat;
+        }
+
+        input {
+            background-color: rgb(185, 240, 185);
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" name="" id="" placeholder="ENTER COUNTRY NAME">
+    <button>search</button>
+    <div class="container"></div>
+    <script>
+        let container = document.querySelector(".container");
+        let inptxt = document.querySelector("input");
+        let btn = document.querySelector("button")
+        btn.addEventListener('click', getcountry)
+        function rendercountry(data) {
+            let lang = Object.values(data.languages)
+            let mylang = lang.join(',')
+            let curr = Object.values(data.currencies)[0]
+            let html = `
+    <section class="countryCard">
+    <img src=${data.flags?.png} alt="">
+    <h2>Name - ${data.name?.official} </h2>
+    <h2>Capital - ${data.capital[0]} </h2>
+    <h2>Languages - ${mylang} </h2>
+    <h2>Currencies - ${curr?.symbol} ${curr?.name} </h2>
+    <h2>Population - ${Math.round(data.population / 1000000)} million  </h2>
+    </section>
+     `
+            container.insertAdjacentHTML('beforeend', html)
+        }
+        function getcountry() {
+            let xhm = new XMLHttpRequest()
+            xhm.open('Get', `https://restcountries.com/v3.1/name/${inptxt.value}`)
+            xhm.send()
+            xhm.addEventListener('load', function () {
+                let [data] = JSON.parse(this.responseText)
+                console.log(data);
+                if (data) btn.disabled = false
+                rendercountry(data)
+            })
+
+        }
+    </script>
+</body>
+
+</html>
